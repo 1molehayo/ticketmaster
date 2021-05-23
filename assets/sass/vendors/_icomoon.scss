@@ -1,0 +1,37 @@
+[class^='icon-'],
+[class*=' icon-'] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  display: inline-block;
+  text-transform: none;
+  line-height: 1;
+  font-family: 'icomoon' !important;
+  font-weight: normal;
+  font-variant: normal;
+  font-style: normal;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-arrow-left::before {
+  content: '\e900';
+}
+.icon-badge::before {
+  content: '\e901';
+}
+.icon-check-circle::before {
+  content: '\e902';
+}
+.icon-close::before {
+  content: '\e903';
+}
+.icon-map::before {
+  content: '\e904';
+}
+.icon-minus::before {
+  content: '\e905';
+}
+.icon-plus::before {
+  content: '\e906';
+}

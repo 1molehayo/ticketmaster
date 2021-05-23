@@ -1,0 +1,32 @@
+html {
+  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
+  @include font-size(regular);
+  word-spacing: 1px;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+body {
+  @include font-family(flutterwave);
+  @include font-size(regular);
+  @include font-weight(regular);
+  line-height: normal;
+  letter-spacing: normal;
+  color: color(dark-shade1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+button {
+  &:hover,
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+}

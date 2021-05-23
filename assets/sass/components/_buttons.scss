@@ -1,0 +1,33 @@
+.button {
+  @include font-size(small);
+  display: inline-block;
+  border-radius: 4px;
+  border: 0;
+  padding: 18px 22px;
+  text-transform: capitalize;
+  transition: color 0.8s ease;
+  transition-property: background-color, color;
+  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.5));
+
+  &:hover,
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  &--sm {
+    padding: 13px 18px;
+  }
+
+  &--primary {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+    background: color(primary);
+    color: color(white);
+
+    &:hover {
+      box-shadow: none;
+      border: 0;
+      background: darken($color: color(primary), $amount: 20);
+    }
+  }
+}
