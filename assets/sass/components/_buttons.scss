@@ -1,33 +1,40 @@
 .button {
   @include font-size(small);
+  @include font-weight(bold);
   display: inline-block;
   border-radius: 4px;
   border: 0;
-  padding: 18px 22px;
-  text-transform: capitalize;
+  padding: 1.6rem 2.2rem;
+  text-transform: uppercase;
+  text-align: center;
   transition: color 0.8s ease;
-  transition-property: background-color, color;
-  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.5));
+  transition-property: background-color, color, box-shadow, transform;
+  filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.3));
 
-  &:hover,
+  @include respond(large) {
+    padding-top: 1.8rem;
+    padding-bottom: 1.8rem;
+  }
+
   &:focus {
     outline: none;
     box-shadow: none;
   }
 
   &--sm {
-    padding: 13px 18px;
+    padding: 1.4rem 1.8rem;
   }
 
   &--primary {
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
     background: color(primary);
     color: color(white);
 
     &:hover {
-      box-shadow: none;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
       border: 0;
-      background: darken($color: color(primary), $amount: 20);
+      background: darken($color: color(primary), $amount: 10%);
+      transform: translateY(-2px);
     }
   }
 }

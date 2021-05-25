@@ -1,4 +1,6 @@
-# ticketmaster
+# Ticket master
+
+An SPA application as part of a fictitious events aggregation platform using the VueJS framework, based on a design prototype.
 
 ## Build Setup
 

@@ -1,3 +1,168 @@
 .header {
   width: 100%;
+  padding: 2rem 0;
+
+  &__container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__nav {
+    display: flex;
+
+    &.open {
+      .header__nav-list {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      .menu-bar {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: 0;
+        transform: translate(-50%, -50%);
+
+        &:nth-of-type(1) {
+          transform: translate(-50%, -50%) rotate(135deg);
+        }
+
+        &:nth-of-type(2) {
+          opacity: 0;
+        }
+
+        &:nth-of-type(3) {
+          transform: translate(-50%, -50%) rotate(-135deg);
+        }
+      }
+    }
+  }
+
+  &__nav-item {
+    position: relative;
+
+    &:not(:last-child) {
+      @include respond(large) {
+        margin-right: 2rem;
+      }
+    }
+
+    a {
+      &:not([class^='button']) {
+        @include font-size(medium);
+        padding: 1.6rem 0;
+
+        @include respond(large) {
+          @include font-size(small);
+        }
+      }
+
+      &.button {
+        margin-top: 1rem;
+
+        @include respond(large) {
+          margin-top: 0;
+          padding-top: 1.4rem;
+          padding-bottom: 1.4rem;
+        }
+      }
+    }
+
+    &--hod {
+      @include respond(large) {
+        display: none;
+      }
+    }
+  }
+
+  &__nav-link {
+    @include link;
+  }
+
+  &__nav-list {
+    padding: 6rem 2.2rem;
+    width: 100%;
+    height: 100vh;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    list-style: none;
+    background-color: color(white);
+    transition: opacity 0.3s ease-in-out;
+    transition-property: opacity, visibility;
+
+    @include respond(large) {
+      padding: 0;
+      height: auto;
+      opacity: 1;
+      visibility: visible;
+      background: transparent;
+      pointer-events: auto;
+    }
+  }
+
+  &__nav-list-pos {
+    z-index: 2;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    @include respond(large) {
+      flex-direction: row;
+      position: static;
+    }
+  }
+
+  &__nav-toggler {
+    z-index: 4;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    margin-left: 2rem;
+    width: 3.5rem;
+    height: 2.5rem;
+    background: transparent;
+
+    @include respond(large) {
+      display: none;
+    }
+
+    .menu-bar {
+      display: inline-block;
+      border-radius: 4px;
+      margin: 2px 0;
+      width: 2rem;
+      height: 2px;
+      background-color: color(dark-shade2);
+      transition: all 0.2s ease;
+      transform-origin: center;
+    }
+  }
+}
+
+#fw-logo {
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+
+  svg {
+    width: 15rem;
+    animation: 1s appear;
+
+    @include respond(medium) {
+      width: auto;
+    }
+  }
 }

@@ -4,6 +4,16 @@
    ========================================================================== */
 
 /**
+ * Add the correct box sizing for all elements and the after and before psuedo classes.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+/**
  * 1. Correct the line height in all browsers.
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
@@ -240,7 +250,6 @@ fieldset {
  */
 
 legend {
-  box-sizing: border-box; /* 1 */
   color: inherit; /* 2 */
   display: table; /* 1 */
   max-width: 100%; /* 1 */
@@ -265,13 +274,11 @@ textarea {
 }
 
 /**
- * 1. Add the correct box sizing in IE 10.
- * 2. Remove the padding in IE 10.
+ * 1. Remove the padding in IE 10.
  */
 
 [type='checkbox'],
 [type='radio'] {
-  box-sizing: border-box; /* 1 */
   padding: 0; /* 2 */
 }
 
@@ -348,4 +355,21 @@ template {
 
 [hidden] {
   display: none;
+}
+
+/**
+ * Remove margin and padding .
+ */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+figure,
+p {
+  margin: 0;
+  padding: 0;
 }

@@ -38,3 +38,24 @@
 
   @return map-get($font-weights, $keyword);
 }
+
+// grid
+@function get-break-point($keyword) {
+  @if not map-has-key($break-points, $keyword) {
+    @error 'Unsupported `break-point` keyword `#{$keyword}`';
+
+    @return null;
+  }
+
+  @return map-get($break-points, $keyword);
+}
+
+@function validate-column($num) {
+  @if $num > $num-of-columns {
+    @error 'Unsupported `column` number `#{$keyword}`';
+
+    @return null;
+  }
+
+  @return $num;
+}

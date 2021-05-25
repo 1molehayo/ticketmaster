@@ -10,39 +10,25 @@
   font-weight: get-font-weight($keyword);
 }
 
-@mixin filter($keyword) {
-  filter: get-svg-filter($keyword);
+@mixin respond($keyword) {
+  // default will be small mobile phones
+
+  @if get-break-point($keyword) {
+    @media only screen and (min-width: get-break-point($keyword)) {
+      @content;
+    }
+  }
 }
 
-@mixin respond($breakpoint) {
-  @if ($breakpoint == smallest) {
-    @media only screen and (max-width: 20em) {
-      @content;
-    } // 320px
-  }
-  @if ($breakpoint == smaller) {
-    @media only screen and (min-width: 31.25em) {
-      @content;
-    } // 500px
-  }
-  @if ($breakpoint == small) {
-    @media only screen and (min-width: 37.5em) {
-      @content;
-    } // 600px
-  }
-  @if ($breakpoint == medium) {
-    @media only screen and (min-width: 48em) {
-      @content;
-    } // 768px
-  }
-  @if ($breakpoint == large) {
-    @media only screen and (min-width: 61.938em) {
-      @content;
-    } // 990px
-  }
-  @if ($breakpoint == largest) {
-    @media only screen and (min-width: 75em) {
-      @content;
-    } // 1200px
+@mixin grid-column($num) {
+  flex: 0 0 calc(100% * #{$num} / #{$num-of-columns});
+  width: calc(100% * #{$num} / #{$num-of-columns});
+}
+
+@mixin link {
+  transition: color 0.3s;
+
+  &:hover {
+    color: color(primary);
   }
 }

@@ -1,20 +1,49 @@
 h1,
 h2,
-h3,
-h4 {
-  @include font-size(large);
+h3 {
+  @include font-size(x-large);
   @include font-weight(bold);
-  margin-bottom: 1.5rem;
-  text-align: left;
+  margin-bottom: 1rem;
   line-height: 1.2;
-  color: color(dark-shade1);
+  text-transform: capitalize;
+  color: color(dark-shade2);
+}
+
+h4,
+h5,
+h6 {
+  @include font-size(regular);
+  @include font-family(opensans);
+  @include font-weight(semi-bold);
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: color(dark-shade2);
+
+  @include respond(large) {
+    @include font-size(medium);
+    margin-bottom: 2rem;
+  }
 }
 
 p,
 li,
 a {
   @include font-weight(regular);
+  @include font-size(regular);
   line-height: 1.6;
   letter-spacing: 0.2px;
   color: color(dark-shade1);
+}
+
+p {
+  margin-bottom: 1rem;
+
+  @include respond(large) {
+    @include font-size(medium);
+  }
+}
+
+ul {
+  list-style: none;
 }

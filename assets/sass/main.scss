@@ -11,10 +11,12 @@
 @import 'base/fonts';
 @import 'base/typography';
 @import 'base/base';
+@import 'base/animations';
 
 // components
 @import 'components/buttons';
-@import 'components/loader';
+@import 'components/custom-image';
+@import 'components/event';
 @import 'components/modal';
 @import 'components/nav';
 
@@ -26,6 +28,8 @@
 
 // pages
 @import 'pages/home';
+@import 'pages/event-details';
+@import 'pages/cart';
 @import 'pages/page';
 
 // themes

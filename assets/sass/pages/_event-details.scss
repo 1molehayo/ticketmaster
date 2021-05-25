@@ -1,0 +1,90 @@
+.event-details {
+  z-index: 1;
+  position: relative;
+
+  .button {
+    width: auto;
+
+    @include respond(large) {
+      width: 100%;
+    }
+  }
+
+  .container {
+    max-width: 94rem;
+  }
+
+  &__image {
+    position: relative;
+    margin-top: 4rem;
+    width: 100%;
+    height: auto;
+
+    @include respond(large) {
+      margin-top: 0;
+      margin-bottom: 0;
+      height: 43rem;
+    }
+  }
+
+  #lines {
+    display: none;
+
+    @include respond(largest) {
+      z-index: -1;
+      position: fixed;
+      display: block;
+      top: 50%;
+      right: -47rem;
+      width: 80%;
+      height: 100vh;
+      transform: translateY(-50%) scale(1.5);
+    }
+  }
+
+  #map-link {
+    @include font-weight(bold);
+    display: inline-block;
+    padding: 0.5rem 0;
+    color: color(primary);
+
+    span {
+      vertical-align: middle;
+      margin-right: 0.5rem;
+    }
+  }
+
+  &__price {
+    @include font-weight(bold);
+    @include font-size(medium);
+    margin-bottom: 1.5rem;
+
+    @include respond(large) {
+      @include font-size(large);
+    }
+  }
+
+  &__socials {
+    a {
+      padding: 0.5rem 0;
+      color: color(dark-shade2);
+      @include link;
+
+      @include respond(large) {
+        @include font-size(medium);
+      }
+    }
+  }
+
+  &__text {
+    margin-bottom: 2rem;
+
+    &--lg {
+      @include font-size(medium);
+
+      @include respond(large) {
+        @include font-size(large);
+      }
+    }
+  }
+}

@@ -1,17 +1,58 @@
 .footer {
-  padding: 1rem;
+  z-index: 2;
+  position: relative;
   width: 100%;
-  background: color(grey-shade3);
 
-  .copyright {
-    @include font-size(small);
+  &__container {
+    padding-top: 5rem;
+    padding-bottom: 3rem;
 
-    &__link {
-      color: color(black);
+    @include respond(medium) {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    @include respond(large) {
+      max-width: 96rem !important;
     }
   }
 
-  &__title {
-    color: color(dark-shade1);
+  &__links {
+    color: color(grey-shade1);
+
+    @include respond(medium) {
+      display: flex;
+    }
+
+    li {
+      margin-bottom: 1rem;
+
+      @include respond(medium) {
+        margin-bottom: 0;
+      }
+
+      &:not(:last-child) {
+        margin-right: 3rem;
+      }
+
+      a {
+        @include link;
+      }
+    }
+  }
+
+  &__text {
+    @include font-family(opensans);
+    @include font-size(regular);
+    @include font-weight(semi-bold);
+    color: rgba($color: color(grey-shade2), $alpha: 0.7);
+    margin-bottom: 0;
+
+    @include respond(medium) {
+      margin-bottom: 1rem;
+      @include font-size(small);
+    }
   }
 }
