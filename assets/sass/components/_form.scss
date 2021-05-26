@@ -1,0 +1,120 @@
+.form {
+  &__radio {
+    display: none;
+    padding: 0;
+    margin-bottom: 0;
+    cursor: pointer;
+
+    & + label {
+      margin-right: 2rem;
+    }
+
+    &:checked + label:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 2px;
+      left: 9px;
+      width: 6px;
+      height: 14px;
+      border: 1px solid color(primary);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    &-group {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      align-self: center;
+    }
+  }
+
+  &__error-text {
+    @include font-family(opensans);
+    @include font-size(x-small);
+    margin: 5px 0;
+    color: color(red);
+    display: none;
+  }
+
+  &__group {
+    margin-bottom: 2rem;
+
+    @include respond(large) {
+      margin-bottom: 3rem;
+    }
+
+    &--error {
+      animation-name: shakeError;
+      animation-fill-mode: forwards;
+      animation-duration: 0.6s;
+      animation-timing-function: ease-in-out;
+
+      .form__label {
+        color: color(red);
+      }
+
+      .form__error-text {
+        display: block;
+      }
+
+      textarea,
+      input,
+      input:focus,
+      input:hover {
+        border-color: #f79483;
+        outline-color: #f79483;
+      }
+    }
+  }
+
+  &__input {
+    @include form-field;
+    height: 4rem;
+
+    @include respond(medium) {
+      height: 5rem;
+    }
+  }
+
+  &__label {
+    @include font-family(opensans);
+    @include font-size(small);
+    color: color(grey-shade1);
+    margin-bottom: 1rem;
+    display: block;
+
+    @include respond(large) {
+      @include font-size(regular);
+      margin-bottom: 1.4rem;
+    }
+
+    &--inline {
+      display: inline;
+      position: relative;
+      margin-bottom: 0;
+      cursor: pointer;
+
+      &::before {
+        content: '';
+        background-color: transparent;
+        border: 2px solid #e0e0e0;
+
+        padding: 1rem;
+        display: inline-block;
+        position: relative;
+        vertical-align: middle;
+        cursor: pointer;
+        margin-right: 5px;
+      }
+    }
+  }
+
+  &__text-area {
+    @include form-field;
+    min-height: 5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}

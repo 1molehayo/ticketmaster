@@ -10,22 +10,40 @@
 
     <section class="section">
       <div class="container">
-        <div class="row">
+        <div v-if="!noEvents" class="row">
           <div
             v-for="event in events"
             :key="event.id"
             class="col-md-6 col-xl-4 mb-6"
           >
-            <EventCard :event-item="event" />
+            <LazyEventCard :event-item="event" />
           </div>
         </div>
+
+        <NoEvent v-else />
+      </div>
+    </section>
+
+    <section v-if="pageInfo.total !== 0 && !noEvents" class="section">
+      <div class="container">
+        <pagination
+          v-model="pageInfo.currentPage"
+          theme="bootstrap4"
+          class="text-center"
+          :records="pageInfo.total"
+          :per-page="20"
+          :options="paginationOptions"
+          @paginate="callback"
+        ></pagination>
       </div>
     </section>
   </main>
 </template>
 
 <script>
+import NuxtSSRScreenSize from 'nuxt-ssr-screen-size'
 import { getPrice } from '~/assets/js/apiFunctions'
+import { isArrayEmpty, isObjectEmpty } from '~/assets/js/utility'
 
 const getEventData = (arr, $axios) => {
   return Promise.all(
@@ -37,13 +55,41 @@ const getEventData = (arr, $axios) => {
 }
 
 export default {
-  async asyncData({ store, $axios, error }) {
+  mixins: [NuxtSSRScreenSize.NuxtSSRScreenSizeMixin],
+  async asyncData({ store, $axios, error, query }) {
     try {
-      const { data } = await $axios.get('events')
-      const events = await getEventData(data.data.events, $axios)
-      store.dispatch('getEvents', events)
+      let eventQuery = ''
+      const queryParams = new URLSearchParams('')
 
-      return { events }
+      if (!isObjectEmpty(query) && query.page > 1) {
+        queryParams.append('page', query.page)
+        eventQuery = `?${queryParams.toString()}`
+      }
+
+      // eslint-disable-next-line no-console
+      console.log('query  >>> ', eventQuery)
+
+      const { data } = await $axios.get(`events${eventQuery}`)
+
+      if (isArrayEmpty(data.data)) {
+        return {
+          events: [],
+          pageInfo: {
+            currentPage: 0,
+            total: 0,
+          },
+        }
+      }
+
+      const events = await getEventData(data.data.events, $axios)
+      const pageInfo = data.data.pageInfo
+
+      store.dispatch('getEvents', {
+        pageInfo,
+        events,
+      })
+
+      return { events, pageInfo }
     } catch (err) {
       error({
         statusCode: err.response ? err.response.status : 500,
@@ -52,6 +98,41 @@ export default {
           : 'Oops!, something went wrong',
       })
     }
+  },
+  computed: {
+    paginationOptions() {
+      const texts = {
+        count: `Showing page ${this.pageInfo.currentPage} out of ${this.pageInfo.totalPages} pages`,
+      }
+
+      if (this.$vssWidth >= 990) {
+        return {
+          chunk: 10,
+          chunksNavigation: 'fixed',
+          texts,
+        }
+      }
+
+      return {
+        chunk: 5,
+        chunksNavigation: 'scroll',
+        texts,
+      }
+    },
+
+    noEvents() {
+      return isArrayEmpty(this.events)
+    },
+  },
+  watchQuery: ['page'],
+  methods: {
+    callback(page) {
+      // eslint-disable-next-line no-console
+      // console.log(`query >>> ${this.$query}`)
+      this.$router.push({ path: '/', query: { page } })
+
+      // console.log(`clicked on ${page}`)
+    },
   },
 }
 </script>

@@ -1,14 +1,18 @@
 <template>
   <header class="header">
-    <div class="container header__container">
-      <nuxt-link id="fw-logo" to="/">
+    <div class="container header__container" :class="{ open: isOpen }">
+      <nuxt-link id="fw-logo" to="/" @click.native="closeMenu">
         <Logo />
       </nuxt-link>
 
-      <nav class="header__nav" :class="{ open: isOpen }">
-        <ul class="header__nav-list header__nav-list-pos">
+      <nav class="header__nav">
+        <ul class="header__nav-list header__nav-list--pos">
           <li class="header__nav-item">
-            <nuxt-link to="/" class="header__nav-link">
+            <nuxt-link
+              to="/"
+              class="header__nav-link"
+              @click.native="closeMenu"
+            >
               I didn't get my tickets
             </nuxt-link>
           </li>
@@ -44,7 +48,11 @@
           </li>
 
           <li class="header__nav-item">
-            <nuxt-link to="/event/create" class="button button--primary">
+            <nuxt-link
+              to="/event/create"
+              class="button button--primary"
+              @click.native="closeMenu"
+            >
               create your own event
             </nuxt-link>
           </li>
@@ -70,6 +78,10 @@ export default {
   methods: {
     toggleMenu() {
       this.isOpen = !this.isOpen
+    },
+
+    closeMenu() {
+      this.isOpen = false
     },
   },
 }

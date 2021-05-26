@@ -70,6 +70,22 @@ $start: 0;
   flex-grow: 1 !important;
 }
 
+.d-flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.m-auto {
+  margin: 0 auto;
+}
+
 // others
 .img-rounded {
   border-radius: 6px;

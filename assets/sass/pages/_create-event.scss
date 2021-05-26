@@ -1,0 +1,12 @@
+.create-event {
+  &__card {
+    @include form-card;
+    margin: 4rem auto 0;
+    padding: 5rem 3rem;
+    max-width: 80rem;
+
+    @include respond(small) {
+      padding: 5rem;
+    }
+  }
+}

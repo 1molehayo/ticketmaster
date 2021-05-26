@@ -34,3 +34,20 @@ export const getEventDate = (datetime, moment, isFull = false) => {
 
   return 'N/A'
 }
+
+export const getOptimizedImage = ($vssWidth, image) => {
+  if ($vssWidth && image) {
+    const urlParams = new URLSearchParams(image)
+    urlParams.set('w', `${$vssWidth}`)
+    return decodeURIComponent(urlParams.toString())
+  }
+
+  return image
+}
+
+export const transformPostData = (form, socialLinks) => ({
+  ...form,
+  num_of_tickets: Number(form.num_of_tickets),
+  is_free: Number(form.is_free),
+  social_links: socialLinks,
+})

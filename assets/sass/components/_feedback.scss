@@ -1,0 +1,36 @@
+$size: 13.7rem;
+
+.feedback {
+  text-align: center;
+
+  &__icon {
+    display: inline-block;
+    margin-bottom: 3rem;
+    font-size: $size;
+
+    @include respond(large) {
+      margin-bottom: 5rem;
+    }
+
+    &-block {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 4px solid color(red);
+      margin-bottom: 3rem;
+      /* add gutter */
+      width: calc(#{$size} - 10px);
+      height: calc(#{$size} - 10px);
+
+      @include respond(large) {
+        margin-bottom: 5rem;
+      }
+
+      .feedback__icon {
+        margin-bottom: 0;
+        transform: scale(0.8);
+      }
+    }
+  }
+}

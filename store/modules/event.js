@@ -1,8 +1,16 @@
 const state = () => ({
-  eventList: [],
+  eventList: {},
 })
 
-const getters = {}
+const getters = {
+  events(state) {
+    return state.eventList.events
+  },
+
+  pageInfo(state) {
+    return state.eventList.pageInfo
+  },
+}
 
 const mutations = {
   GET_EVENTS(state, payload) {

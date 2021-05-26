@@ -18,7 +18,11 @@
 
             <div class="row">
               <div class="col-8">
-                <button v-if="event.is_free" class="button button--primary">
+                <button
+                  v-if="event.is_free"
+                  class="button button--primary"
+                  @click="toggleModal"
+                >
                   Register for free
                 </button>
 
@@ -31,7 +35,7 @@
 
           <div class="col-lg-6">
             <CustomImage
-              :src="event.image"
+              :src="eventImage"
               img-class="img-rounded"
               :alt="event.name"
               class="event-details__image"
@@ -72,17 +76,17 @@
 
             <ul class="event-details__socials">
               <li>
-                <a href="http://www.nathanielcole.com"
+                <a target="_blank" href="http://www.nathanielcole.com"
                   >http://www.nathanielcole.com</a
                 >
               </li>
               <li>
-                <a href="https://twitter.com/nathanielcole"
+                <a target="_blank" href="https://twitter.com/nathanielcole"
                   >https://twitter.com/nathanielcole</a
                 >
               </li>
               <li>
-                <a href="https://instagram.com/nathanielcole/"
+                <a target="_blank" href="https://instagram.com/nathanielcole/"
                   >https://instagram.com/nathanielcole/</a
                 >
               </li>
@@ -93,25 +97,49 @@
     </section>
 
     <Lines />
+
+    <Modal :has-header="true" :show="showModal" :toggle-modal="toggleModal">
+      <RegistrationForm
+        v-if="!feedback.status"
+        v-bind="form"
+        :loading="loading"
+        button-text="register"
+      />
+
+      <Feedback v-else v-bind="feedback" />
+    </Modal>
   </main>
 </template>
 
 <script>
-import { isArrayEmpty, isObjectEmpty } from '~/assets/js/utility'
-import { getEventDate, getPrice } from '~/assets/js/apiFunctions'
+import NuxtSSRScreenSize from 'nuxt-ssr-screen-size'
+import { isObjectEmpty } from '~/assets/js/utility'
+import {
+  getEventDate,
+  getOptimizedImage,
+  getPrice,
+} from '~/assets/js/apiFunctions'
 
 export default {
-  async asyncData({ store, params, $axios, error }) {
+  mixins: [NuxtSSRScreenSize.NuxtSSRScreenSizeMixin],
+  async asyncData({ store, params, $axios, error, redirect }) {
     try {
-      if (!isArrayEmpty(store.state.event.eventList)) {
+      const eventList = store.state.event.eventList
+
+      if (!isObjectEmpty(eventList)) {
         return {
-          event: store.state.event.eventList.filter(
+          event: eventList.events.filter(
             (item) => item.id === Number(params.id)
           )[0],
         }
       }
 
       const { data } = await $axios.get(`events/${params.id}`)
+
+      if (isObjectEmpty(data.data)) {
+        redirect('/')
+      }
+
       const price = await getPrice(data.data, $axios)
 
       return { event: { ...data.data, price } }
@@ -124,6 +152,23 @@ export default {
       })
     }
   },
+
+  data() {
+    return {
+      showModal: false,
+      form: {
+        name: '',
+        email: '',
+        phone: '',
+      },
+      loading: false,
+      feedback: {
+        status: '',
+        message: '',
+      },
+    }
+  },
+
   computed: {
     eventDate() {
       if (!isObjectEmpty(this.event)) {
@@ -139,6 +184,48 @@ export default {
       }
 
       return ''
+    },
+
+    eventImage() {
+      return getOptimizedImage(this.$vssWidth, this.event?.image)
+    },
+  },
+
+  methods: {
+    toggleModal() {
+      this.showModal = !this.showModal
+
+      if (this.showModal) {
+        this.form = {
+          name: '',
+          email: '',
+          phone: '',
+        }
+
+        this.feedback = {
+          status: '',
+          message: '',
+        }
+      }
+    },
+    async handleSubmit() {
+      try {
+        const { data } = await this.$axios.post(
+          `event/${this.$route.params.id}/register`,
+          this.form
+        )
+        // eslint-disable-next-line no-console
+        console.log('register success', data)
+        this.feedback = {
+          status: 'success',
+          message: `You have successfully registered for the ${this.event.name.toLowerCase()}.`,
+        }
+      } catch (error) {
+        this.feedback = {
+          status: 'success',
+          message: `You have successfully registered for the ${this.event.name.toLowerCase()}.`,
+        }
+      }
     },
   },
 }

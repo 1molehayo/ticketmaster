@@ -1,0 +1,45 @@
+.pagination {
+  display: inline-block;
+  margin: 0 0 2rem;
+  padding: 0;
+
+  li {
+    display: inline;
+
+    @include respond(large) {
+      &:hover:not(.active):not(.disabled) > a {
+        background-color: color(grey-shade4);
+      }
+    }
+
+    &.disabled > a {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  a.page-link {
+    display: inline-block;
+    border-radius: 5px;
+    margin: 0 0.2rem;
+    padding: 0.6rem 1.3rem;
+    text-decoration: none;
+    color: color(black);
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    @include respond(medium) {
+      @include font-size(medium);
+    }
+
+    &.active {
+      @include font-weight(bold);
+      background-color: color(primary);
+      color: color(white);
+    }
+  }
+
+  & ~ p {
+    color: color(grey-shade3);
+  }
+}

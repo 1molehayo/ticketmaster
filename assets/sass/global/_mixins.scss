@@ -32,3 +32,33 @@
     color: color(primary);
   }
 }
+
+@mixin form-card {
+  box-shadow: 0px 4px 4px rgba($color: color(black), $alpha: 0.25);
+  border-radius: 1rem;
+  background-color: color(white);
+  width: 100%;
+  min-height: 500px;
+}
+
+@mixin form-field {
+  @include font-size(regular);
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 0;
+  padding: 0 1rem;
+  width: 100%;
+  transition: border 0.1s ease;
+
+  &:focus {
+    border-color: color(primary);
+    outline-color: color(primary);
+  }
+
+  @include respond((large)) {
+    &:hover {
+      border-color: color(primary);
+      outline-color: color(primary);
+    }
+  }
+}

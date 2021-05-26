@@ -1,0 +1,14 @@
+#lines {
+  display: none;
+
+  @include respond(largest) {
+    z-index: -1;
+    position: fixed;
+    display: block;
+    top: 50%;
+    right: -47rem;
+    width: 80%;
+    height: 100vh;
+    transform: translateY(-50%) scale(1.5);
+  }
+}

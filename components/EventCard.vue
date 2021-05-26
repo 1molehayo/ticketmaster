@@ -1,7 +1,7 @@
 <template>
   <figure class="event">
     <CustomImage
-      :src="eventItem.image"
+      :src="eventImage"
       img-class="img-rounded"
       :alt="eventItem.name"
       class="event__image"
@@ -28,7 +28,7 @@
 
 <script>
 import NuxtSSRScreenSize from 'nuxt-ssr-screen-size'
-import { getEventDate } from '~/assets/js/apiFunctions'
+import { getEventDate, getOptimizedImage } from '~/assets/js/apiFunctions'
 
 export default {
   mixins: [NuxtSSRScreenSize.NuxtSSRScreenSizeMixin],
@@ -65,13 +65,7 @@ export default {
     },
 
     eventImage() {
-      if (this.$vssWidth <= 600 && this.eventItem.image) {
-        const urlParams = new URLSearchParams(this.eventItem.image)
-        urlParams.set('w', '600')
-        return decodeURIComponent(urlParams.toString())
-      }
-
-      return this.eventItem.image
+      return getOptimizedImage(this.$vssWidth, this.eventItem.image)
     },
   },
   methods: {},

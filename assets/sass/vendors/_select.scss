@@ -1,0 +1,30 @@
+@import 'vue-select/src/scss/vue-select.scss';
+
+.select-tags {
+  .vs__search::placeholder,
+  .vs__dropdown-toggle,
+  .vs__dropdown-menu {
+    @include form-field;
+    min-height: 4rem;
+
+    @include respond(medium) {
+      min-height: 5rem;
+    }
+  }
+
+  .vs__selected-options {
+    align-items: center;
+    padding-top: 2px;
+    padding-bottom: 6px;
+  }
+
+  .vs__selected {
+    @include font-family(flutterwave);
+    border-color: darken($color: color(ash), $amount: 5%);
+    background-color: #fff7e9;
+
+    button {
+      fill: rgba($color: color(red), $alpha: 0.8);
+    }
+  }
+}

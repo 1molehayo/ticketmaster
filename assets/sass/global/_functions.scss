@@ -1,3 +1,5 @@
+@use "sass:math";
+
 // colors
 @function color($key) {
   @if map-has-key($colors, $key) {
@@ -58,4 +60,11 @@
   }
 
   @return $num;
+}
+
+@function get-top-position($keyword) {
+  $top-no-padding: $modal-close-position - 1rem;
+  $top-distance: math.div(($top-no-padding - get-font-size($keyword)), 2);
+
+  @return $top-no-padding - $top-distance;
 }

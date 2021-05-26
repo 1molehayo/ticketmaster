@@ -1,12 +1,16 @@
 h1,
 h2,
 h3 {
-  @include font-size(x-large);
+  @include font-size(m-large);
   @include font-weight(bold);
   margin-bottom: 1rem;
   line-height: 1.2;
   text-transform: capitalize;
   color: color(dark-shade2);
+
+  @include respond(small) {
+    @include font-size(x-large);
+  }
 }
 
 h4,

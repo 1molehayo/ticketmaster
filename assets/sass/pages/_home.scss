@@ -44,4 +44,27 @@
       text-transform: unset;
     }
   }
+
+  #no-event {
+    text-align: center;
+
+    svg {
+      display: inline-block;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      width: 10rem;
+
+      @include respond(small) {
+        width: 15rem;
+      }
+
+      @include respond(medium) {
+        margin-top: 4rem;
+      }
+
+      @include respond(large) {
+        width: 20rem;
+      }
+    }
+  }
 }
