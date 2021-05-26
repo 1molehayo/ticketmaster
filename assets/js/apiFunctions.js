@@ -1,4 +1,4 @@
-import { formatNumberWithComa, isArrayEmpty } from './utility'
+import { formatNumberWithComa, isArrayEmpty, isObjectEmpty } from './utility'
 
 export const getPrice = async (eventObj, $axios) => {
   let price
@@ -45,9 +45,14 @@ export const getOptimizedImage = ($vssWidth, image) => {
   return image
 }
 
-export const transformPostData = (form, socialLinks) => ({
+export const transformPostData = (form, socialLinks, userTags) => ({
   ...form,
   num_of_tickets: Number(form.num_of_tickets),
   is_free: Number(form.is_free),
   social_links: socialLinks,
+  tags: userTags.join(', '),
 })
+
+export const isFeedbackSuccess = (data) => {
+  return data && !isObjectEmpty(data) && data.status === 'success'
+}

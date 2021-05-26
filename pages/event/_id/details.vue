@@ -2,7 +2,7 @@
   <main class="page__body event-details">
     <section class="section pb-0">
       <div class="container">
-        <div class="row">
+        <div v-if="!pageHasError" class="row">
           <div class="col-lg-6">
             <h6>{{ eventDate }}</h6>
 
@@ -19,7 +19,7 @@
             <div class="row">
               <div class="col-8">
                 <button
-                  v-if="event.is_free"
+                  v-if="event && event.is_free"
                   class="button button--primary"
                   @click="toggleModal"
                 >
@@ -29,6 +29,15 @@
                 <nuxt-link v-else class="button button--primary" to="/cart">
                   Buy tickets
                 </nuxt-link>
+
+                <!-- uncomment to test the free registration -->
+
+                <!-- <button
+                  class="button button--primary mt-5"
+                  @click="toggleModal"
+                >
+                  Register for free
+                </button> -->
               </div>
             </div>
           </div>
@@ -98,16 +107,11 @@
 
     <Lines />
 
-    <Modal :has-header="true" :show="showModal" :toggle-modal="toggleModal">
-      <RegistrationForm
-        v-if="!feedback.status"
-        v-bind="form"
-        :loading="loading"
-        button-text="register"
-      />
-
-      <Feedback v-else v-bind="feedback" />
-    </Modal>
+    <RegistrationForm
+      :show-modal="showModal"
+      :toggle-modal="toggleModal"
+      :event-name="event.name"
+    />
   </main>
 </template>
 
@@ -118,11 +122,12 @@ import {
   getEventDate,
   getOptimizedImage,
   getPrice,
+  isFeedbackSuccess,
 } from '~/assets/js/apiFunctions'
 
 export default {
   mixins: [NuxtSSRScreenSize.NuxtSSRScreenSizeMixin],
-  async asyncData({ store, params, $axios, error, redirect }) {
+  async asyncData({ store, params, $axios, error }) {
     try {
       const eventList = store.state.event.eventList
 
@@ -136,8 +141,16 @@ export default {
 
       const { data } = await $axios.get(`events/${params.id}`)
 
-      if (isObjectEmpty(data.data)) {
-        redirect('/')
+      if (!isFeedbackSuccess(data)) {
+        const errorMessage = `There was a problem while fetching the event, please try to refresh your page.`
+        error({
+          statusCode: 500,
+          message: errorMessage,
+        })
+
+        return {
+          event: {},
+        }
       }
 
       const price = await getPrice(data.data, $axios)
@@ -145,30 +158,16 @@ export default {
       return { event: { ...data.data, price } }
     } catch (err) {
       error({
-        statusCode: err.response ? err.response.status : 404,
-        message: err.response
-          ? err.response.data
-          : 'Oops!, something went wrong',
+        statusCode: err.response ? err.response.status : 500,
+        message: err?.message || 'Oops!, something went wrong',
       })
     }
   },
-
   data() {
     return {
       showModal: false,
-      form: {
-        name: '',
-        email: '',
-        phone: '',
-      },
-      loading: false,
-      feedback: {
-        status: '',
-        message: '',
-      },
     }
   },
-
   computed: {
     eventDate() {
       if (!isObjectEmpty(this.event)) {
@@ -189,44 +188,17 @@ export default {
     eventImage() {
       return getOptimizedImage(this.$vssWidth, this.event?.image)
     },
+
+    pageHasError() {
+      return !this.event && isObjectEmpty(this.event)
+    },
   },
 
   methods: {
     toggleModal() {
       this.showModal = !this.showModal
-
-      if (this.showModal) {
-        this.form = {
-          name: '',
-          email: '',
-          phone: '',
-        }
-
-        this.feedback = {
-          status: '',
-          message: '',
-        }
-      }
     },
-    async handleSubmit() {
-      try {
-        const { data } = await this.$axios.post(
-          `event/${this.$route.params.id}/register`,
-          this.form
-        )
-        // eslint-disable-next-line no-console
-        console.log('register success', data)
-        this.feedback = {
-          status: 'success',
-          message: `You have successfully registered for the ${this.event.name.toLowerCase()}.`,
-        }
-      } catch (error) {
-        this.feedback = {
-          status: 'success',
-          message: `You have successfully registered for the ${this.event.name.toLowerCase()}.`,
-        }
-      }
-    },
+    async handleSubmit() {},
   },
 }
 </script>

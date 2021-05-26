@@ -6,7 +6,8 @@
         <div class="create-event__card">
           <form
             v-if="!feedback.status"
-            class="row"
+            class="row form"
+            :class="{ 'create-event__card--sm': feedback.status }"
             @submit.prevent="handleSubmit"
           >
             <div class="col-md-6">
@@ -115,13 +116,20 @@
 
             <div class="col-12">
               <div class="form__group">
+                <ImageUpload v-model="form.image" />
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form__group">
                 <label class="form__label" for="tags"> Tags </label>
 
                 <VSelect
                   v-model="tags"
-                  :input-id="tags"
+                  input-id="tags"
                   class="select-tags"
-                  :close-on-select="false"
+                  placeholder="Press enter to select tag ..."
+                  no-drop
                   taggable
                   multiple
                   push-tags
@@ -170,8 +178,9 @@
                 class="button button--primary w-100"
                 type="submit"
                 :disabled="loading"
+                :class="{ 'button--loading': loading }"
               >
-                Save
+                {{ loading ? 'saving...' : 'Save' }}
               </button>
             </div>
           </form>
@@ -187,7 +196,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { transformPostData } from '~/assets/js/apiFunctions'
+import { isFeedbackSuccess, transformPostData } from '~/assets/js/apiFunctions'
 import { createPostValidations } from '~/assets/js/formValidations'
 import { postEventModel } from '~/assets/js/models'
 
@@ -209,6 +218,8 @@ export default {
       this.$v.$touch()
 
       if (!this.$v.$invalid) {
+        this.loading = true
+
         try {
           const socials = {
             facebook: this.facebook,
@@ -216,28 +227,27 @@ export default {
             instagram: this.instagram,
             linkedin: this.linkedin,
           }
-          const formData = transformPostData(this.form, socials)
+          const formData = transformPostData(this.form, socials, this.tags)
 
-          // eslint-disable-next-line no-console
-          console.log('submit!', formData)
-
-          return
-
-          // eslint-disable-next-line no-unreachable
           const { data } = await this.$axios.post('events', formData)
 
-          // eslint-disable-next-line no-console
-          console.log('register success', data)
+          if (isFeedbackSuccess(data)) {
+            this.feedback = {
+              status: 'success',
+              message: `You have successfully created ${this.form.name.toLowerCase()} event.`,
+            }
+            return
+          }
 
+          const errorMessage = `There was a problem while registering for the ${this.form.name.toLowerCase()} event, please reach our support center, for more details.`
+          throw new Error(errorMessage)
+        } catch (err) {
           this.feedback = {
-            status: 'success',
-            message: `You have successfully registered for the ${this.form.name.toLowerCase()}.`,
+            status: 'fail',
+            message: err.message,
           }
-        } catch (error) {
-          this.feedback = {
-            status: 'success',
-            message: `You have successfully registered for the ${this.form.name.toLowerCase()}.`,
-          }
+        } finally {
+          this.loading = false
         }
       }
     },

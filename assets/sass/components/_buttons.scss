@@ -14,6 +14,7 @@
   @include respond(large) {
     padding-top: 1.8rem;
     padding-bottom: 1.8rem;
+    cursor: pointer;
   }
 
   &:focus {

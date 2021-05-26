@@ -1,27 +1,35 @@
 <template>
-  <div class="col-md-5 offset-md-1">
-    <h5>1. single file</h5>
-    <form>
-      <div class="form-group">
-        <label for="my-file">Select Image</label>
-        <input
-          id="my-file"
-          class="form-control-file"
-          type="file"
-          accept="image/*"
-          @change="previewImage"
-        />
+  <div
+    class="form__group"
+    :class="{
+      'form__group--error': error,
+    }"
+  >
+    <label class="form__label" for="image"
+      >Upload picture
+      <em class="color-grey-shade3">(png, jpg, svg, gif)</em></label
+    >
 
-        <div class="border p-2 mt-3">
-          <p>Preview Here:</p>
-          <template v-if="preview">
-            <img :src="preview" class="img-fluid" />
-            <p class="mb-0">file name: {{ image.name }}</p>
-            <p class="mb-0">size: {{ image.size / 1024 }}KB</p>
-          </template>
-        </div>
-      </div>
-    </form>
+    <div class="form__file-wrapper">
+      <input
+        id="image"
+        ref="imageInput"
+        type="file"
+        accept="image/*"
+        class="form__file"
+        @input="pickFile"
+      />
+
+      <label tabindex="0" for="my-file" class="form__file-trigger"
+        >Select a file...</label
+      >
+
+      <p class="file-return">{{ filename }}</p>
+    </div>
+
+    <p v-if="error" class="form__error-text">
+      This file size is {{ filesize }} MiB, maximum of 2MiB allowed
+    </p>
   </div>
 </template>
 
@@ -29,20 +37,31 @@
 export default {
   data() {
     return {
-      preview: null,
-      image: null,
+      filename: null,
+      imagesize: 0,
     }
   },
+  computed: {
+    error() {
+      return this.imagesize && this.imagesize / (1024 * 1024) > 1
+    },
+    filesize() {
+      return Number(this.imagesize / (1024 * 1024)).toFixed(2)
+    },
+  },
   methods: {
-    previewImage(event) {
-      const input = event.target
-      if (input.files) {
+    pickFile() {
+      const input = this.$refs.imageInput
+      const files = input.files
+
+      if (files && files[0]) {
         const reader = new FileReader()
         reader.onload = (e) => {
-          this.preview = e.target.result
+          this.$emit('input', e.target.result)
         }
-        this.image = input.files[0]
-        reader.readAsDataURL(input.files[0])
+        reader.readAsDataURL(files[0])
+        this.filename = files[0].name
+        this.imagesize = files[0].size
       }
     },
   },

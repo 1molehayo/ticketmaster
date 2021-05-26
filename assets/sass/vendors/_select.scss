@@ -1,7 +1,6 @@
 @import 'vue-select/src/scss/vue-select.scss';
 
 .select-tags {
-  .vs__search::placeholder,
   .vs__dropdown-toggle,
   .vs__dropdown-menu {
     @include form-field;
@@ -26,5 +25,9 @@
     button {
       fill: rgba($color: color(red), $alpha: 0.8);
     }
+  }
+
+  .vs__search::placeholder {
+    color: rgba($color: color(grey-shade3), $alpha: 0.5);
   }
 }

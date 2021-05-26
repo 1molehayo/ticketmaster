@@ -42,7 +42,7 @@
 
 <script>
 import NuxtSSRScreenSize from 'nuxt-ssr-screen-size'
-import { getPrice } from '~/assets/js/apiFunctions'
+import { getPrice, isFeedbackSuccess } from '~/assets/js/apiFunctions'
 import { isArrayEmpty, isObjectEmpty } from '~/assets/js/utility'
 
 const getEventData = (arr, $axios) => {
@@ -66,12 +66,15 @@ export default {
         eventQuery = `?${queryParams.toString()}`
       }
 
-      // eslint-disable-next-line no-console
-      console.log('query  >>> ', eventQuery)
-
       const { data } = await $axios.get(`events${eventQuery}`)
 
-      if (isArrayEmpty(data.data)) {
+      if (!isFeedbackSuccess(data)) {
+        const errorMessage = `There was a problem while fetching the event list, please try to refresh your page.`
+        error({
+          statusCode: 500,
+          message: errorMessage,
+        })
+
         return {
           events: [],
           pageInfo: {
@@ -93,9 +96,7 @@ export default {
     } catch (err) {
       error({
         statusCode: err.response ? err.response.status : 500,
-        message: err.response
-          ? err.response.data
-          : 'Oops!, something went wrong',
+        message: err.message || 'Oops!, something went wrong',
       })
     }
   },
@@ -127,11 +128,7 @@ export default {
   watchQuery: ['page'],
   methods: {
     callback(page) {
-      // eslint-disable-next-line no-console
-      // console.log(`query >>> ${this.$query}`)
       this.$router.push({ path: '/', query: { page } })
-
-      // console.log(`clicked on ${page}`)
     },
   },
 }

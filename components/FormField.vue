@@ -38,6 +38,12 @@
     </p>
 
     <p v-if="!numeric" class="form__error-text">{{ label }} must a number</p>
+
+    <p v-if="!email" class="form__error-text">{{ label }} is invalid</p>
+
+    <p v-if="!phone" class="form__error-text">{{ label }} is invalid</p>
+
+    <!-- {{ field }} -->
   </div>
 </template>
 
@@ -113,6 +119,18 @@ export default {
         return this.field.$params?.maxLength?.min
       }
       return ''
+    },
+    email() {
+      if (Object.keys(this.field).includes('email')) {
+        return this.field.email
+      }
+      return true
+    },
+    phone() {
+      if (Object.keys(this.field).includes('phone')) {
+        return this.field.phone
+      }
+      return true
     },
   },
 }

@@ -3,8 +3,8 @@
     <div class="modal__backdrop"></div>
 
     <div class="modal__wrapper modal__wrapper--trans">
-      <div class="modal__header" :class="{ 'modal-header--no-b': !hasHeader }">
-        <h6 v-if="hasHeader" class="mb-0">{{ title }}</h6>
+      <div class="modal__header" :class="{ 'modal-header--no-b': !title }">
+        <h6 v-if="title" class="mb-0">{{ title }}</h6>
         <button class="modal__close" @click="toggleModal">
           <span class="icon-close"></span>
         </button>
@@ -23,10 +23,6 @@
 export default {
   props: {
     show: {
-      type: Boolean,
-      default: false,
-    },
-    hasHeader: {
       type: Boolean,
       default: false,
     },

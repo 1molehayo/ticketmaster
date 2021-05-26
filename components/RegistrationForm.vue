@@ -1,96 +1,154 @@
 <template>
-  <form @submit.prevent="handleSubmit">
-    <div class="form__group" :class="{ 'form__group--error': $v.name.$error }">
-      <label class="form__label">Name</label>
-      <input v-model.trim="$v.name.$model" class="form__input" />
+  <Modal title="register" :show="showModal" :toggle-modal="closeModal">
+    <form v-if="!feedback.status" class="form" @submit.prevent="handleSubmit">
+      <FormField
+        id="name"
+        v-model.trim="$v.form.name.$model"
+        :is-required="true"
+        :field="$v.form.name"
+        label="Name"
+      />
 
-      <div v-if="!$v.name.required" class="form__error-text">
-        Name is required
-      </div>
-      <div v-if="!$v.name.minLength" class="form__error-text">
-        Name must have at least {{ $v.name.$params.minLength.min }} letters.
-      </div>
-      <div v-if="!$v.name.maxLength" class="form__error-text">
-        Name must have a maximum of {{ $v.name.$params.maxLength.min }} letters.
-      </div>
-    </div>
+      <FormField
+        id="email"
+        v-model.trim="$v.form.email.$model"
+        :is-required="true"
+        :field="$v.form.email"
+        label="Email address"
+      />
 
-    <FormField
-      id="name"
-      v-model.trim="$v.form.name.$model"
-      :is-required="true"
-      :field="$v.form.name"
-      label="Name"
-    />
+      <FormField
+        id="phone"
+        v-model.trim="$v.form.phone.$model"
+        :is-required="true"
+        :field="$v.form.phone"
+        label="Phone number"
+      />
 
-    <button
-      class="button button--primary w-100"
-      type="submit"
-      :disabled="loading"
-    >
-      {{ buttonText }}
-    </button>
-  </form>
+      <button
+        class="button button--primary w-100 mb-5"
+        type="submit"
+        :disabled="loading"
+        :class="{ 'button--loading': loading }"
+      >
+        {{ loading ? 'registering...' : 'register' }}
+      </button>
+    </form>
+
+    <Feedback v-else v-bind="feedback" />
+  </Modal>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
-import ValidatePhone from '~/assets/js/validatePhone'
+import { isFeedbackSuccess } from '~/assets/js/apiFunctions'
+import phone from '~/assets/js/validatePhone'
 
 export default {
   mixins: [validationMixin],
   props: {
-    name: {
+    eventName: {
       type: String,
       default: '',
     },
-    email: {
-      type: String,
-      default: '',
-    },
-    phone: {
-      type: String,
-      default: '',
-    },
-    submit: {
-      type: Function,
-      // eslint-disable-next-line no-console
-      default: () => console.log('submitted Form!'),
-    },
-    loading: {
+    showModal: {
       type: Boolean,
       default: false,
     },
-    buttonText: {
-      type: String,
-      default: 'Submit',
+    toggleModal: {
+      type: Function,
+      default: () => {},
     },
   },
   validations: {
-    name: {
-      required,
-      minLength: minLength(4),
-      maxLength: maxLength(30),
-    },
-    email: {
-      required,
-      email,
-    },
-    phone: {
-      required,
-      ValidatePhone,
+    form: {
+      name: {
+        required,
+        minLength: minLength(4),
+        maxLength: maxLength(30),
+      },
+      email: {
+        required,
+        email,
+      },
+      phone: {
+        required,
+        phone,
+      },
     },
   },
+  data() {
+    return {
+      form: {
+        name: '',
+        email: '',
+        phone: '',
+      },
+      loading: false,
+      feedback: {
+        status: '',
+        message: '',
+      },
+    }
+  },
+  mounted() {
+    if (this.showModal) {
+      this.resetForm()
+    }
+  },
   methods: {
-    handleSubmit() {
+    resetForm() {
+      this.form = {
+        name: '',
+        email: '',
+        phone: '',
+      }
+
+      this.$v.form.$reset()
+
+      this.feedback = {
+        status: '',
+        message: '',
+      }
+    },
+    async handleSubmit() {
       this.$v.$touch()
 
       if (!this.$v.$invalid) {
-        this.submit()
-        // eslint-disable-next-line no-console
-        console.log('submit!')
+        this.loading = true
+
+        try {
+          const { data } = await this.$axios.post(
+            `events/${this.$route.params.id}/register`,
+            this.form
+          )
+
+          if (isFeedbackSuccess(data)) {
+            this.feedback = {
+              status: 'success',
+              message: `You have successfully registered for the ${this.eventName.toLowerCase()}.`,
+            }
+            return
+          }
+
+          const errorMessage = `There was a problem while registering for the ${this.eventName.toLowerCase()} event, please reach our support center, for more details.`
+
+          throw new Error(errorMessage)
+        } catch (err) {
+          this.feedback = {
+            status: 'fail',
+            message: err.message,
+          }
+        } finally {
+          this.loading = false
+        }
       }
+    },
+
+    closeModal() {
+      this.resetForm()
+      this.toggleModal()
     },
   },
 }

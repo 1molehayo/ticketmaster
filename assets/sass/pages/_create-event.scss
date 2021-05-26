@@ -8,5 +8,9 @@
     @include respond(small) {
       padding: 5rem;
     }
+
+    &--sm {
+      max-width: 47rem;
+    }
   }
 }

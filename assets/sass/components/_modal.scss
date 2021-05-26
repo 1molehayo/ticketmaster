@@ -36,7 +36,7 @@
     border: 0;
 
     @include respond(large) {
-      @include font-size(small);
+      @include font-size(medium);
 
       &:hover {
         color: color(primary);
@@ -67,6 +67,7 @@
   }
 
   &__wrapper {
+    @include form-card;
     position: absolute;
     z-index: 9999;
     top: 4em;
