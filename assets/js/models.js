@@ -1,4 +1,17 @@
-export const postEventModel = () => ({
+export const registerModel = {
+  form: {
+    name: '',
+    email: '',
+    phone: '',
+  },
+  feedback: {
+    status: '',
+    message: '',
+  },
+  loading: false,
+}
+
+export const postEventModel = {
   form: {
     name: '',
     description: '',
@@ -32,4 +45,23 @@ export const postEventModel = () => ({
     status: '',
     message: '',
   },
-})
+}
+
+export const cartModel = {
+  activeTab: 1,
+  loading: false,
+  showCart: false,
+  vat: 100,
+  cart: [],
+  event: {},
+  tickets: [],
+  form: {
+    name: '',
+    email: '',
+    phone: '',
+  },
+  feedback: {
+    status: '',
+    message: '',
+  },
+}

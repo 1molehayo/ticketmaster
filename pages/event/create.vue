@@ -203,7 +203,14 @@ import { postEventModel } from '~/assets/js/models'
 export default {
   mixins: [validationMixin],
   data() {
-    return postEventModel()
+    return {
+      ...postEventModel,
+    }
+  },
+  head() {
+    return {
+      title: 'Create Event - Flutterwave',
+    }
   },
   computed: {
     minDate() {

@@ -1,12 +1,27 @@
 const state = () => ({
-  order: {},
+  orders: {},
 })
 
 const getters = {}
 
-const mutations = {}
+const mutations = {
+  CREATE_ORDER(state, payload) {
+    state.orders.push(payload)
+  },
+  GET_ORDERS(state, payload) {
+    state.orders = payload
+  },
+}
 
-const actions = {}
+const actions = {
+  createOrder({ commit }, payload) {
+    commit('CREATE_ORDER', payload)
+  },
+
+  getOrders({ commit }, payload) {
+    commit('GET_ORDERS', payload)
+  },
+}
 
 const orderModule = {
   state,

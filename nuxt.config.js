@@ -4,7 +4,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'Ticket master',
+    title: 'Ticket master - Flutterwave',
     htmlAttrs: {
       lang: 'en',
     },
@@ -112,15 +112,18 @@ export default {
     '~/plugins/pagination.js',
     '~/plugins/datetime.js',
     '~/plugins/select.js',
+    { src: '~/plugins/flutterwave.js', mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
-  privateRuntimeConfig: {
+  publicRuntimeConfig: {
     apiPublicKey: process.env.FW_PUBLIC_KEY,
     apiSecretKey: process.env.FW_SECRET_KEY,
   },
+
+  privateRuntimeConfig: {},
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [

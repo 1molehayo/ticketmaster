@@ -12,6 +12,18 @@
   text-align: right !important;
 }
 
+.text-uppercase {
+  text-transform: uppercase !important;
+}
+
+.text-lowercase {
+  text-transform: lowercase !important;
+}
+
+.text-lowercase {
+  text-transform: capitalize !important;
+}
+
 @each $name, $weight in $font-weights {
   .font-#{'' + $name} {
     font-weight: $weight !important;

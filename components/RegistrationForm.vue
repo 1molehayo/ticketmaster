@@ -41,9 +41,9 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
 import { isFeedbackSuccess } from '~/assets/js/apiFunctions'
-import phone from '~/assets/js/validatePhone'
+import { registrationValidations } from '~/assets/js/formValidations'
+import { registerModel } from '~/assets/js/models'
 
 export default {
   mixins: [validationMixin],
@@ -58,38 +58,15 @@ export default {
     },
     toggleModal: {
       type: Function,
-      default: () => {},
+      default: null,
     },
   },
   validations: {
-    form: {
-      name: {
-        required,
-        minLength: minLength(4),
-        maxLength: maxLength(30),
-      },
-      email: {
-        required,
-        email,
-      },
-      phone: {
-        required,
-        phone,
-      },
-    },
+    ...registrationValidations,
   },
   data() {
     return {
-      form: {
-        name: '',
-        email: '',
-        phone: '',
-      },
-      loading: false,
-      feedback: {
-        status: '',
-        message: '',
-      },
+      ...registerModel,
     }
   },
   mounted() {

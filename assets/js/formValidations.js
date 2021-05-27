@@ -4,7 +4,9 @@ import {
   maxLength,
   numeric,
   url,
+  email,
 } from 'vuelidate/lib/validators'
+import phone from '~/assets/js/validatePhone'
 
 export const createPostValidations = {
   form: {
@@ -46,5 +48,23 @@ export const createPostValidations = {
   },
   linkedin: {
     url,
+  },
+}
+
+export const registrationValidations = {
+  form: {
+    name: {
+      required,
+      minLength: minLength(4),
+      maxLength: maxLength(30),
+    },
+    email: {
+      required,
+      email,
+    },
+    phone: {
+      required,
+      phone,
+    },
   },
 }

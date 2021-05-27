@@ -22,6 +22,16 @@
     box-shadow: none;
   }
 
+  &--capsule {
+    @include font-family(opensans);
+    @include font-size(medium);
+    border-radius: 6rem;
+    margin: 5rem 0;
+    padding: 1rem 2.5rem;
+    background-color: color(white);
+    text-transform: unset;
+  }
+
   &--sm {
     padding: 1.4rem 1.8rem;
   }

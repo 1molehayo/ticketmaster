@@ -26,9 +26,13 @@
                   Register for free
                 </button>
 
-                <nuxt-link v-else class="button button--primary" to="/cart">
+                <button
+                  v-else
+                  class="button button--primary"
+                  @click="selectProduct"
+                >
                   Buy tickets
-                </nuxt-link>
+                </button>
 
                 <!-- uncomment to test the free registration -->
 
@@ -117,25 +121,30 @@
 
 <script>
 import NuxtSSRScreenSize from 'nuxt-ssr-screen-size'
-import { isObjectEmpty } from '~/assets/js/utility'
+import { isArrayEmpty, isObjectEmpty } from '~/assets/js/utility'
 import {
   getEventDate,
   getOptimizedImage,
   getPrice,
   isFeedbackSuccess,
+  updateLocalStorage,
 } from '~/assets/js/apiFunctions'
 
 export default {
   mixins: [NuxtSSRScreenSize.NuxtSSRScreenSizeMixin],
   async asyncData({ store, params, $axios, error }) {
     try {
+      let event = {}
+
       const eventList = store.state.event.eventList
 
       if (!isObjectEmpty(eventList)) {
+        event = eventList.events.filter(
+          (item) => item.id === Number(params.id)
+        )[0]
+
         return {
-          event: eventList.events.filter(
-            (item) => item.id === Number(params.id)
-          )[0],
+          event,
         }
       }
 
@@ -149,7 +158,7 @@ export default {
         })
 
         return {
-          event: {},
+          event,
         }
       }
 
@@ -166,6 +175,11 @@ export default {
   data() {
     return {
       showModal: false,
+    }
+  },
+  head() {
+    return {
+      title: 'Event Details - Flutterwave',
     }
   },
   computed: {
@@ -193,12 +207,38 @@ export default {
       return !this.event && isObjectEmpty(this.event)
     },
   },
-
   methods: {
     toggleModal() {
       this.showModal = !this.showModal
     },
-    async handleSubmit() {},
+
+    async selectProduct() {
+      this.$nuxt.$loading.start()
+
+      try {
+        const response = await this.$axios.get(
+          `ticket-types/events/${this.event.id}`
+        )
+
+        if (isArrayEmpty(response.data.data)) {
+          throw new Error(
+            'There are currently no tickets available, please contact out support center'
+          )
+        }
+
+        updateLocalStorage('selectedEvent', this.event)
+        updateLocalStorage('tickets', response.data.data)
+
+        this.$router.push('/cart')
+      } catch (err) {
+        this.$nuxt.error({
+          statusCode: err.response ? err.response.status : 404,
+          message: err?.message || 'Oops!, something went wrong',
+        })
+      } finally {
+        this.$nuxt.$loading.finish()
+      }
+    },
   },
 }
 </script>

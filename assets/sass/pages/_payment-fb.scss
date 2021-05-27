@@ -1,0 +1,12 @@
+.payment-fb {
+  &__card {
+    @include form-card;
+    margin: 0 auto;
+    padding: 5rem;
+    width: $card-width;
+
+    &--auto {
+      min-height: auto;
+    }
+  }
+}

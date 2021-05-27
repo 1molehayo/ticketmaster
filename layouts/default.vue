@@ -1,9 +1,22 @@
 <template>
   <div class="page">
-    <Header />
+    <Header v-if="!isCartPage" />
 
     <Nuxt />
 
-    <Footer />
+    <Footer v-if="!isCartPage" />
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      isCartPage: false,
+    }
+  },
+  created() {
+    this.isCartPage = this.$route.name === 'cart'
+  },
+}
+</script>

@@ -7,14 +7,15 @@ export const getPrice = async (eventObj, $axios) => {
     const response = await $axios.get(`ticket-types/events/${eventObj.id}`)
 
     if (!isArrayEmpty(response.data.data)) {
+      const currency = response.data.data[0].currency
       const maxValue = response.data.data.sort((a, b) => b.price - a.price)[0]
         .price
       const minValue = response.data.data.sort((a, b) => a.price - b.price)[0]
         .price
 
-      price = `\u20A6${formatNumberWithComa(
+      price = `${currency}${formatNumberWithComa(
         minValue
-      )} - \u20A6${formatNumberWithComa(maxValue)}`
+      )} - ${currency}${formatNumberWithComa(maxValue)}`
     } else {
       price = 'N/A'
     }
@@ -55,4 +56,34 @@ export const transformPostData = (form, socialLinks, userTags) => ({
 
 export const isFeedbackSuccess = (data) => {
   return data && !isObjectEmpty(data) && data.status === 'success'
+}
+
+export const getLocalStoreItem = (prop, defaultValue) => {
+  if (process.client) {
+    if (defaultValue) {
+      return localStorage.getItem(prop)
+        ? JSON.parse(localStorage.getItem(prop))
+        : defaultValue
+    }
+
+    return localStorage.getItem(prop)
+  }
+}
+
+export const updateLocalStorage = (prop, payload) => {
+  if (process.client) {
+    return localStorage.setItem(prop, JSON.stringify(payload))
+  }
+}
+
+export const deletLocalStoreItem = (prop) => {
+  if (process.client) {
+    return localStorage.removeItem(prop)
+  }
+}
+
+export const clearLocalStorage = () => {
+  if (process.client) {
+    return localStorage.clear()
+  }
 }

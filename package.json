@@ -26,6 +26,7 @@
     "nuxt": "^2.15.3",
     "nuxt-ssr-screen-size": "github:hugojerez/nuxt-ssr-screen-size",
     "vue-datetime": "^1.0.0-beta.14",
+    "vue-flutterwave": "^1.0.0",
     "vue-pagination-2": "^3.0.9",
     "vue-select": "^3.11.2",
     "vuelidate": "^0.7.6",

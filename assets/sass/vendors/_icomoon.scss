@@ -14,6 +14,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-shopping-cart::before {
+  content: '\e908';
+}
+
 .icon-image::before {
   content: '\e907';
 }
