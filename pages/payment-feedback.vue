@@ -30,37 +30,42 @@ import { clearLocalStorage } from '~/assets/js/apiFunctions'
 
 export default {
   async asyncData({ $config, $axios, query }) {
-    clearLocalStorage()
+    try {
+      clearLocalStorage()
 
-    // eslint-disable-next-line no-console
-    console.log(
-      `https://api.flutterwave.com/v3/transactions/${query.transaction_id}/verify`
-    )
+      // eslint-disable-next-line no-console
+      console.log(
+        `https://api.flutterwave.com/v3/transactions/${query.transaction_id}/verify`
+      )
 
-    const { data } = await $axios({
-      method: 'get',
-      url: `https://api.flutterwave.com/v3/transactions/${query.transaction_id}/verify`,
-      baseURL: '',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${$config.apiSecretKey}`,
-      },
-    })
+      const { data } = await $axios({
+        method: 'get',
+        url: `https://api.flutterwave.com/v3/transactions/${query.transaction_id}/verify`,
+        baseURL: '',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${$config.apiSecretKey}`,
+        },
+      })
 
-    // eslint-disable-next-line no-console
-    console.log(`status >>> ${data.status}`)
+      // eslint-disable-next-line no-console
+      console.log(`status >>> ${data.status}`)
 
-    if (data.status === 'success') {
-      return {
-        status: 'success',
-        message:
-          'Your tickets have been confirmed and sent to your email address at ted@flutterwave.com',
+      if (data.status === 'success') {
+        return {
+          status: 'success',
+          message:
+            'Your tickets have been confirmed and sent to your email address at ted@flutterwave.com',
+        }
       }
-    }
 
-    return {
-      status: 'fail',
-      message: 'There was a problem verifying the transaction, try again',
+      return {
+        status: 'fail',
+        message: 'There was a problem verifying the transaction, try again',
+      }
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err)
     }
   },
   data() {
