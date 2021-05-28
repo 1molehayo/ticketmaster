@@ -2,7 +2,7 @@
   <main class="page__body payment-fb">
     <section class="section pb-0">
       <div class="container">
-        <p class="payment-fb__text">
+        <p v-if="showForm" class="payment-fb__text">
           <strong>
             Enter your email and we’ll send your tickets right away!
           </strong>

@@ -167,6 +167,14 @@ export default {
           )
         }
 
+        this.$store.commit('savePaymentStatus', {
+          status: 'success',
+          tx_ref: payResponse.tx_ref,
+          transaction_id: payResponse.transaction_id,
+          message:
+            'Your tickets have been confirmed and sent to your email address at ted@flutterwave.com',
+        })
+
         this.$router.push({
           path: '/payment-feedback',
           query: {
@@ -175,27 +183,19 @@ export default {
             transaction_id: payResponse.transaction_id,
           },
         })
-
-        this.$store.commit('savePaymentStatus', {
-          status: 'success',
-          tx_ref: payResponse.tx_ref,
-          transaction_id: payResponse.transaction_id,
-          message:
-            'Your tickets have been confirmed and sent to your email address at ted@flutterwave.com',
-        })
       } catch (err) {
-        this.$router.push({
-          path: '/payment-feedback',
-          query: {
-            status: 'fail',
-          },
-        })
-
         this.$store.commit('savePaymentStatus', {
           status: 'fail',
           message:
             err.message ||
             'Oops! there was a problem with this order,  please contact out support center',
+        })
+
+        this.$router.push({
+          path: '/payment-feedback',
+          query: {
+            status: 'fail',
+          },
         })
       } finally {
         this.resetForm()
