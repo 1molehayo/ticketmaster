@@ -88,7 +88,7 @@ export default {
           tx_ref: this.reference,
           amount: this.amount,
           currency: this.currency,
-          redirect_url: 'https://fw-ticketmaster.netlify.app/',
+          redirect_url: 'https://fw-ticketmaster.netlify.app/payment-feedback',
           payment_options: 'card,mobilemoney,ussd',
           customer: {
             name: this.name,
