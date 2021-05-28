@@ -10,13 +10,10 @@
 
 <script>
 export default {
-  data() {
-    return {
-      isCartPage: false,
-    }
-  },
-  created() {
-    this.isCartPage = this.$route.name === 'cart'
+  computed: {
+    isCartPage() {
+      return this.$route.name === 'cart'
+    },
   },
 }
 </script>

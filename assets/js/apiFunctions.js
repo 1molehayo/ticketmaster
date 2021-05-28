@@ -13,9 +13,13 @@ export const getPrice = async (eventObj, $axios) => {
       const minValue = response.data.data.sort((a, b) => a.price - b.price)[0]
         .price
 
-      price = `${currency}${formatNumberWithComa(
-        minValue
-      )} - ${currency}${formatNumberWithComa(maxValue)}`
+      if (minValue === maxValue) {
+        price = `${currency}${formatNumberWithComa(minValue)}`
+      } else {
+        price = `${currency}${formatNumberWithComa(
+          minValue
+        )} - ${currency}${formatNumberWithComa(maxValue)}`
+      }
     } else {
       price = 'N/A'
     }

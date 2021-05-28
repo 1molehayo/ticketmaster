@@ -193,6 +193,10 @@ export default {
     this.event = getLocalStoreItem('selectedEvent', {})
     this.tickets = getLocalStoreItem('tickets', [])
 
+    if (!this.isCartAvailable) {
+      this.$router.push('/')
+    }
+
     // remove outdated items
     if (!isArrayEmpty(this.cart)) {
       this.cart = this.cart.filter((item) => {
