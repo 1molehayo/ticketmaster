@@ -38,15 +38,16 @@ export default {
         `https://api.flutterwave.com/v3/transactions/${query.transaction_id}/verify`
       )
 
-      const { data } = await $axios({
-        method: 'get',
-        url: `https://api.flutterwave.com/v3/transactions/${query.transaction_id}/verify`,
-        baseURL: '',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${$config.apiSecretKey}`,
-        },
-      })
+      const { data } = await $axios.get(
+        `https://api.flutterwave.com/v3/transactions/${query.transaction_id}/verify`,
+        {
+          baseURL: '',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${$config.apiSecretKey}`,
+          },
+        }
+      )
 
       // eslint-disable-next-line no-console
       console.log(`status >>> ${data.status}`)
