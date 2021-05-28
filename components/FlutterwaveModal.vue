@@ -88,7 +88,6 @@ export default {
           tx_ref: this.reference,
           amount: this.amount,
           currency: this.currency,
-          // redirect_url: 'https://fw-ticketmaster.netlify.app/payment-feedback',
           payment_options: 'card,mobilemoney,ussd',
           customer: {
             name: this.name,
@@ -99,8 +98,6 @@ export default {
             this.callback(response)
           },
           onclose: () => {
-            // eslint-disable-next-line no-console
-            console.log('closeeeeeed!!!')
             this.close()
           },
           customizations: {
