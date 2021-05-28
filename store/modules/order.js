@@ -1,5 +1,6 @@
 const state = () => ({
   orders: {},
+  paymentStatus: {},
 })
 
 const getters = {}
@@ -11,6 +12,9 @@ const mutations = {
   GET_ORDERS(state, payload) {
     state.orders = payload
   },
+  SAVE_STATUS(state, payload) {
+    state.paymentStatus = payload
+  },
 }
 
 const actions = {
@@ -20,6 +24,9 @@ const actions = {
 
   getOrders({ commit }, payload) {
     commit('GET_ORDERS', payload)
+  },
+  savePaymentStatus({ commit }, payload) {
+    commit('SAVE_STATUS', payload)
   },
 }
 

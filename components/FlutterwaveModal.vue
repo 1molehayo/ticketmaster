@@ -27,7 +27,7 @@ export default {
     },
     phone: {
       type: String,
-      required: true,
+      default: '',
     },
     description: {
       type: String,
@@ -83,22 +83,25 @@ export default {
   methods: {
     makePayment() {
       if (this.isValid) {
-        this.$launchFlutterwave({
+        this.payWithFlutterwave({
           public_key: this.$config.apiPublicKey,
           tx_ref: this.reference,
           amount: this.amount,
           currency: this.currency,
-          redirect_url: 'https://fw-ticketmaster.netlify.app/payment-feedback',
+          // redirect_url: 'https://fw-ticketmaster.netlify.app/payment-feedback',
           payment_options: 'card,mobilemoney,ussd',
           customer: {
             name: this.name,
             email: this.email,
-            phonenumber: this.phone,
+            phone_number: this.phone,
           },
           callback: (response) => {
+            this.callback(response)
+          },
+          onclose: () => {
             // eslint-disable-next-line no-console
-            console.log('calledb acedsksjs')
-            this.callback()
+            console.log('closeeeeeed!!!')
+            this.close()
           },
           customizations: {
             title: 'Flutterwave Event Registration',

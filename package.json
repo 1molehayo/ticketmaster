@@ -23,6 +23,7 @@
     "@nuxtjs/axios": "^5.13.4",
     "@nuxtjs/proxy": "^2.1.0",
     "core-js": "^3.9.1",
+    "flutterwave-vue-v3": "^1.0.5",
     "luxon": "^1.27.0",
     "nuxt": "^2.15.3",
     "nuxt-ssr-screen-size": "github:hugojerez/nuxt-ssr-screen-size",

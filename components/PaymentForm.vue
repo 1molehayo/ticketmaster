@@ -37,10 +37,9 @@
     </div>
 
     <FlutterwaveModal
-      :name="form.name"
-      :email="form.email"
-      :phone="form.phone"
+      v-bind="form"
       :amount="total"
+      :callback="paymentCallback"
       :close="onCancel"
       :currency="currency"
       :description="description"
@@ -52,6 +51,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
+import { isFeedbackSuccess } from '~/assets/js/apiFunctions'
 import { registrationValidations } from '~/assets/js/formValidations'
 import { registerModel } from '~/assets/js/models'
 import { formatNumberWithComa } from '~/assets/js/utility'
@@ -118,29 +118,92 @@ export default {
     },
   },
   methods: {
+    resetForm() {
+      this.form = {
+        name: '',
+        email: '',
+        phone: '',
+      }
+    },
     handleSubmit() {
       this.$v.$touch()
     },
-    async paymentCallback() {
-      const postData = {
-        event_id: this.cart.event_id,
-        ...this.form,
-        base_amount: this.subTtotal,
-        value_added_tax: this.vat,
-        tickets_bought: `${this.ticketsBought}`,
-      }
+    async paymentCallback(payResponse) {
+      this.$nuxt.$loading.start()
 
-      await this.$axios.post('orders', postData)
-    },
-    onCancel() {
-      this.$router.push({
-        path: '/payment-feedback?status=cancel',
-        params: {
+      try {
+        //   verify payment
+        const verifyResponse = await this.$axios.get(
+          `https://api.flutterwave.com/v3/transactions/${payResponse.transaction_id}/verify`,
+          {
+            baseURL: '',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${this.$config.apiSecretKey}`,
+            },
+          }
+        )
+
+        if (!isFeedbackSuccess(verifyResponse.data)) {
+          throw new Error(
+            'There was a problem verifying the transaction, try again'
+          )
+        }
+
+        //   create order
+        const postData = {
+          event_id: this.cart.event_id,
+          ...this.form,
+          base_amount: this.subTtotal,
+          value_added_tax: this.vat,
+          tickets_bought: `${this.ticketsBought}`,
+        }
+
+        const response = await this.$axios.post('orders', postData)
+
+        if (!isFeedbackSuccess(response.data)) {
+          throw new Error(
+            'There was a problem booking your order, please contact out support center'
+          )
+        }
+
+        this.$router.push({
+          path: '/payment-feedback',
+          query: {
+            status: 'success',
+            tx_ref: payResponse.tx_ref,
+            transaction_id: payResponse.transaction_id,
+          },
+        })
+
+        this.$store.commit('savePaymentStatus', {
+          status: 'success',
+          tx_ref: payResponse.tx_ref,
+          transaction_id: payResponse.transaction_id,
+          message:
+            'Your tickets have been confirmed and sent to your email address at ted@flutterwave.com',
+        })
+      } catch (err) {
+        this.$router.push({
+          path: '/payment-feedback',
+          query: {
+            status: 'fail',
+          },
+        })
+
+        this.$store.commit('savePaymentStatus', {
           status: 'fail',
-          message: 'Lets try other events',
-        },
-      })
+          message:
+            err.message ||
+            'Oops! there was a problem with this order,  please contact out support center',
+        })
+      } finally {
+        this.resetForm()
+        this.$nuxt.$loading.finish()
+        this.closePaymentModal()
+      }
     },
+    onCancel() {},
   },
 }
 </script>

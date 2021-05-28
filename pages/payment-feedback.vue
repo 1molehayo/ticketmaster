@@ -2,22 +2,37 @@
   <main class="page__body payment-fb">
     <section class="section pb-0">
       <div class="container">
-        <client-only>
-          <div
-            class="payment-fb__card"
-            :class="{ 'payment-fb__card--auto': !showForm }"
-          >
-            <div class="payment-fb__form"></div>
+        <p class="payment-fb__text">
+          <strong>
+            Enter your email and we’ll send your tickets right away!
+          </strong>
+        </p>
+        <div
+          class="payment-fb__card"
+          :class="{ 'payment-fb__card--auto': showForm }"
+        >
+          <div v-if="showForm" class="payment-fb__form">
+            <FormField
+              id="email"
+              v-model.trim="$v.email.$model"
+              :is-required="true"
+              :field="$v.email"
+              label="Email address"
+            />
 
-            <div class="payment-fb__feedback">
-              <Feedback :status="status" :message="message" />
-
-              <nuxt-link to="/" class="button button--primary w-100 mt-5">
-                {{ getButtonText }}
-              </nuxt-link>
-            </div>
+            <button class="button button--primary w-100" @click="nextTab">
+              CONFIRM AND SEND TICKET
+            </button>
           </div>
-        </client-only>
+
+          <div v-else class="payment-fb__feedback">
+            <Feedback :status="status" :message="message" />
+
+            <nuxt-link to="/" class="button button--primary w-100 mt-5">
+              {{ getButtonText }}
+            </nuxt-link>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -26,58 +41,54 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import { validationMixin } from 'vuelidate'
+import { required, email } from 'vuelidate/lib/validators'
 import { clearLocalStorage } from '~/assets/js/apiFunctions'
+import { isObjectEmpty } from '~/assets/js/utility'
 
 export default {
-  async asyncData({ $config, $axios, query }) {
-    try {
-      clearLocalStorage()
-
-      // eslint-disable-next-line no-console
-      console.log(
-        `https://api.flutterwave.com/v3/transactions/${query.transaction_id}/verify`
-      )
-
-      const { data } = await $axios.get(
-        `https://api.flutterwave.com/v3/transactions/${query.transaction_id}/verify`,
-        {
-          baseURL: '',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${$config.apiSecretKey}`,
-          },
-        }
-      )
-
-      // eslint-disable-next-line no-console
-      console.log(`status >>> ${data.status}`)
-
-      if (data.status === 'success') {
-        return {
-          status: 'success',
-          message:
-            'Your tickets have been confirmed and sent to your email address at ted@flutterwave.com',
-        }
-      }
-
-      return {
-        status: 'fail',
-        message: 'There was a problem verifying the transaction, try again',
-      }
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log('err.....')
-    }
-  },
+  mixins: [validationMixin],
   data() {
     return {
       email: '',
       activeTab: 1,
     }
   },
+  validations: {
+    email: {
+      required,
+      email,
+    },
+  },
   computed: {
+    ...mapState({
+      paymentStatus: (state) => state.paymentStatus,
+    }),
+    message() {
+      if (!isObjectEmpty(this.paymentStatus)) {
+        return this.paymentStatus.message
+      }
+
+      if (this.$route.query.status === 'success') {
+        return 'Your tickets have been confirmed and sent to your email address at ted@flutterwave.com'
+      }
+
+      return 'Oops! there was a problem with this order,  please contact out support center'
+    },
+    status() {
+      if (!isObjectEmpty(this.paymentStatus)) {
+        return this.paymentStatus.status
+      }
+
+      if (this.$route.query.status) {
+        return this.$route.query.status
+      }
+
+      return 'fail'
+    },
     showForm() {
-      return this.activeTab === 1
+      return this.activeTab === 1 && this.status === 'success'
     },
     getButtonText() {
       if (this.status === 'success') {
@@ -85,6 +96,18 @@ export default {
       }
 
       return 'Try other events'
+    },
+  },
+  created() {
+    clearLocalStorage()
+  },
+  methods: {
+    nextTab() {
+      this.$v.$touch()
+
+      if (!this.$v.$invalid) {
+        this.activeTab = 2
+      }
     },
   },
 }

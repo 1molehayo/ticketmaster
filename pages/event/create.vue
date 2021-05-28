@@ -221,6 +221,21 @@ export default {
     ...createPostValidations,
   },
   methods: {
+    resetForm() {
+      const { form, facebook, twitter, linkedin, instagram, loading, tags } =
+        postEventModel
+
+      this.form = form
+      this.facebook = facebook
+      this.twitter = twitter
+      this.linkedin = linkedin
+      this.instagram = instagram
+      this.is_free_options = postEventModel.is_free_options
+      this.loading = loading
+      this.tags = tags
+
+      this.$v.form.$reset()
+    },
     async handleSubmit() {
       this.$v.$touch()
 
@@ -238,23 +253,24 @@ export default {
 
           const { data } = await this.$axios.post('events', formData)
 
-          if (isFeedbackSuccess(data)) {
-            this.feedback = {
-              status: 'success',
-              message: `You have successfully created ${this.form.name.toLowerCase()} event.`,
-            }
-            return
+          if (!isFeedbackSuccess(data)) {
+            const errorMessage = `There was a problem while registering for the ${this.form.name.toLowerCase()} event, please reach our support center, for more details.`
+            throw new Error(errorMessage)
           }
 
-          const errorMessage = `There was a problem while registering for the ${this.form.name.toLowerCase()} event, please reach our support center, for more details.`
-          throw new Error(errorMessage)
+          this.feedback = {
+            status: 'success',
+            message: `You have successfully created ${this.form.name.toLowerCase()} event.`,
+          }
+
+          this.$store.commit('createOrder', formData)
         } catch (err) {
           this.feedback = {
             status: 'fail',
             message: err.message,
           }
         } finally {
-          this.loading = false
+          this.resetForm()
         }
       }
     },
