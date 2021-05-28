@@ -3,7 +3,7 @@
     @include form-card;
     margin: 0 auto;
     padding: 5rem;
-    width: $card-width;
+    max-width: $card-width;
 
     &--auto {
       min-height: auto;

@@ -12,7 +12,7 @@
             <div class="payment-fb__feedback">
               <Feedback :status="status" :message="message" />
 
-              <nuxt-link to="/" class="button button--primary w-100 pt-5">
+              <nuxt-link to="/" class="button button--primary w-100 mt-5">
                 {{ getButtonText }}
               </nuxt-link>
             </div>
@@ -26,13 +26,12 @@
 </template>
 
 <script>
+import { clearLocalStorage } from '~/assets/js/apiFunctions'
+
 export default {
   async asyncData({ $config, $axios, query }) {
     try {
-      // eslint-disable-next-line no-console
-      console.log(
-        `https://api.flutterwave.com/v3/transactions/${query.transaction_id}/verify`
-      )
+      clearLocalStorage()
 
       const { data } = await $axios({
         method: 'get',
@@ -44,10 +43,7 @@ export default {
         },
       })
 
-      // eslint-disable-next-line no-console
-      console.log(data)
-
-      if (data.message === 'success') {
+      if (data.status === 'success') {
         return {
           status: 'success',
           message:

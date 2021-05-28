@@ -52,7 +52,6 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { clearLocalStorage } from '~/assets/js/apiFunctions'
 import { registrationValidations } from '~/assets/js/formValidations'
 import { registerModel } from '~/assets/js/models'
 import { formatNumberWithComa } from '~/assets/js/utility'
@@ -123,44 +122,15 @@ export default {
       this.$v.$touch()
     },
     async paymentCallback() {
-      this.$nuxt.$loading.start()
-
-      try {
-        const postData = {
-          event_id: this.cart.event_id,
-          ...this.form,
-          base_amount: this.subTtotal,
-          value_added_tax: this.vat,
-          tickets_bought: `${this.ticketsBought}`,
-        }
-
-        const response = await this.$axios.post('orders', postData)
-
-        if (response.status !== 'success') {
-          throw new Error(
-            'There was a problem booking your order, please contact out support center'
-          )
-        }
-
-        clearLocalStorage()
-
-        this.$router.push({
-          path: '/payment-feedback?status=success',
-          params: { status: 'success' },
-        })
-      } catch (err) {
-        this.$router.push({
-          path: '/payment-feedback?status=fail',
-          params: {
-            status: 'fail',
-            message:
-              err?.message ||
-              'Oops! there was a problem with this order,  please contact out support center',
-          },
-        })
-      } finally {
-        this.$nuxt.$loading.finish()
+      const postData = {
+        event_id: this.cart.event_id,
+        ...this.form,
+        base_amount: this.subTtotal,
+        value_added_tax: this.vat,
+        tickets_bought: `${this.ticketsBought}`,
       }
+
+      await this.$axios.post('orders', postData)
     },
     onCancel() {
       this.$router.push({
