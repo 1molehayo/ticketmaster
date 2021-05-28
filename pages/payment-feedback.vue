@@ -30,34 +30,37 @@ import { clearLocalStorage } from '~/assets/js/apiFunctions'
 
 export default {
   async asyncData({ $config, $axios, query }) {
-    try {
-      clearLocalStorage()
+    clearLocalStorage()
 
-      const { data } = await $axios({
-        method: 'get',
-        url: `https://api.flutterwave.com/v3/transactions/${query.transaction_id}/verify`,
-        baseURL: '',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${$config.apiSecretKey}`,
-        },
-      })
+    // eslint-disable-next-line no-console
+    console.log(
+      `https://api.flutterwave.com/v3/transactions/${query.transaction_id}/verify`
+    )
 
-      if (data.status === 'success') {
-        return {
-          status: 'success',
-          message:
-            'Your tickets have been confirmed and sent to your email address at ted@flutterwave.com',
-        }
-      }
+    const { data } = await $axios({
+      method: 'get',
+      url: `https://api.flutterwave.com/v3/transactions/${query.transaction_id}/verify`,
+      baseURL: '',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${$config.apiSecretKey}`,
+      },
+    })
 
+    // eslint-disable-next-line no-console
+    console.log(`status >>> ${data.status}`)
+
+    if (data.status === 'success') {
       return {
-        status: 'fail',
-        message: 'There was a problem verifying the transaction, try again',
+        status: 'success',
+        message:
+          'Your tickets have been confirmed and sent to your email address at ted@flutterwave.com',
       }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error)
+    }
+
+    return {
+      status: 'fail',
+      message: 'There was a problem verifying the transaction, try again',
     }
   },
   data() {
